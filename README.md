@@ -169,15 +169,14 @@ Every AEMET call, cache decision, and error is logged with enough context
 (station, range, row counts) to troubleshoot a "why is this data stale/
 missing" report without reproducing the request.
 
-### Towards production scale (not implemented, noted for discussion)
+### Towards scalability 
 
-The brief asks to flag "potential scalability" thinking, even where not
-built:
+The potential scalibility of this product that could be performed:
 
 - **SQLite → Postgres**: SQLite is perfect for this challenge's scope (single
-  process, low write concurrency — Antarctic data is small). At real
+  process, low write concurrency due to the Antarctic data is small). At real
   multi-instance/high-write scale, swapping `DATABASE_URL` for Postgres is a
-  one-line config change since the code only uses SQLAlchemy Core/ORM, no
+  one-line config change since the code only uses SQLAlchemy, no
   SQLite-specific SQL.
 - **Concurrent cache refresh**: today, the DB session and `ensure_data_cached`
   call happen inline on the request path. Under real load this would move to
@@ -186,7 +185,7 @@ built:
   the AEMET round-trip latency, and the read path becomes pure SQLite.
 - **Rate-limit coordination across instances**: if this API is horizontally
   scaled, multiple instances polling AEMET independently could collectively
-  exceed the 50 req/min limit. A shared lock/token bucket (e.g. in Redis)
+  exceed the 50 req/min limit. A shared lock/token bucket 
   would coordinate that.
 
 ---
