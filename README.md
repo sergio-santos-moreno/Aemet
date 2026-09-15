@@ -200,16 +200,8 @@ the same `/api/antartida/datos/...` endpoint powers the UI.
 Notes on the implementation:
 
 - Typed end-to-end: `src/types.ts` mirrors the backend's Pydantic schemas by
-  hand (no code generation) — reasonable at this size; a generated OpenAPI
-  client (e.g. `openapi-typescript`) would be the natural next step if the
-  contract kept growing.
-- `recharts` was used for the chart instead of a hand-rolled SVG, to spend
-  the available time on the data/timezone correctness that the brief
-  actually grades, rather than reinventing chart axes.
-- Visual design leans into the subject matter (a polar research-station
-  instrument feed) rather than a generic dashboard template: dark
-  "polar-night" palette, monospace for actual data values/timestamps,
-  sans-serif for UI chrome — see `src/styles.css`.
+  hand (no code generation), works well at this size;
+- `recharts` was used for the chart in order to have chart axes and spend time on the correctness of the data/timezone.
 
 ---
 
