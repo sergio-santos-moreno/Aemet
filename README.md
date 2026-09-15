@@ -135,7 +135,7 @@ realistic occurrence once several consumers share one deployment.
   locally (`earliest_datetime_utc` → `latest_datetime_utc`) and when it was
   last checked against AEMET.
 
-### Cache strategy (cache-aside, append-aware)
+### Cache strategy 
 
 AEMET only publishes new Antarctic readings a few times a day, but the brief
 describes traders polling far more often for intraday decisions. Re-fetching
