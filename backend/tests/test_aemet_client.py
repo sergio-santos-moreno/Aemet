@@ -69,6 +69,29 @@ def test_fetch_antartida_readings_no_data_returns_empty_list(aemet_client):
     )
     assert result == []
 
+@respx.mock
+def test_fetch_antartida_readings_soft_404_in_200_body_returns_empty_list(aemet_client):
+    """
+    AEMET sometimes answers with a real HTTP 200 but an embedded
+    'estado': 404 in the JSON body instead of a genuine HTTP 404. This must
+    be treated as "no data", not as an unexpected/malformed response.
+    """
+    first_url = (
+        f"{BASE_URL}/api/antartida/datos/fechaini/2024-01-01T00:00:00UTC/"
+        f"fechafin/2024-01-01T01:00:00UTC/estacion/89070"
+    )
+    respx.get(first_url).mock(
+        return_value=httpx.Response(
+            200, json={"descripcion": "No hay datos que satisfagan esos criterios", "estado": 404}
+        )
+    )
+
+    result = aemet_client.fetch_antartida_readings(
+        "89070",
+        datetime(2024, 1, 1, 0, 0, tzinfo=timezone.utc),
+        datetime(2024, 1, 1, 1, 0, tzinfo=timezone.utc),
+    )
+    assert result == []
 
 @respx.mock
 def test_fetch_antartida_readings_server_error_raises_after_retries(aemet_client):

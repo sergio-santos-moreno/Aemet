@@ -1,0 +1,239 @@
+:root {
+  --bg: #0b1720;
+  --panel: #101f2b;
+  --panel-alt: #0e1b25;
+  --border: #223447;
+  --border-strong: #33495e;
+  --text: #e6eef3;
+  --text-muted: #8ea3b3;
+  --ice: #5fd4e8;
+  --ice-dim: #2c6470;
+  --amber: #e8a23d;
+  --danger: #e2664f;
+
+  --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: radial-gradient(circle at 15% -10%, #10283a 0%, transparent 45%);
+  color: var(--text);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 1.1rem 1.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .mark {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--ice);
+  border: 1px solid var(--ice-dim);
+  padding: 0.15rem 0.45rem;
+}
+
+.app-header h1 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.app-header .sub {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.app-body {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 0;
+}
+
+@media (max-width: 880px) {
+  .app-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Query form ---------- */
+
+.query-panel {
+  border-right: 1px solid var(--border);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.field input,
+.field select {
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  border-radius: 2px;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--ice);
+}
+
+.field .hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.checkbox-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.checkbox-row label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.submit-btn {
+  margin-top: 0.4rem;
+  background: var(--ice);
+  color: #04212b;
+  border: none;
+  padding: 0.65rem 1rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: filter 0.15s ease;
+}
+
+.submit-btn:hover {
+  filter: brightness(1.08);
+}
+
+.submit-btn:disabled {
+  background: var(--border-strong);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* ---------- Main content ---------- */
+
+.content {
+  padding: 1.5rem 1.75rem;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.status-line {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+}
+
+.error-box {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state {
+  color: var(--text-muted);
+  border: 1px dashed var(--border-strong);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.panel-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.data-table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-weight: 500;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--panel-alt);
+  white-space: nowrap;
+}
+
+.data-table tbody tr:hover {
+  background: var(--panel-alt);
+}
+
+.chart-wrap {
+  padding: 1rem;
+}

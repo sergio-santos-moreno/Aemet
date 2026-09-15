@@ -96,6 +96,17 @@ class AemetClient:
             logger.info("AEMET has no data for station=%s range=%s..%s", station_id, start_utc, end_utc)
             return []
 
+        # AEMET sometimes wraps a "no data" result inside an HTTP 200 response
+        # (e.g. {"descripcion": "No hay datos...", "estado": 404}) instead of
+        # a real HTTP 404. Its own "estado" field is the authoritative status
+        # here, so treat a non-200 "estado" the same as a real 404.
+        if isinstance(first_response, dict) and first_response.get("estado") not in (200, None):
+            logger.info(
+                "AEMET reported no data (estado=%s) for station=%s range=%s..%s",
+                first_response.get("estado"), station_id, start_utc, end_utc,
+            )
+            return []
+
         if not isinstance(first_response, dict) or "datos" not in first_response:
             raise AemetApiError(f"Unexpected AEMET response shape: {first_response!r}")
 

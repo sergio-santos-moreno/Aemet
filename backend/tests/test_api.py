@@ -22,7 +22,26 @@ def test_get_antartida_datos_happy_path(client, fake_aemet_client):
     # Datetime must include a UTC offset (Europe/Madrid, winter -> +01:00)
     assert body["data"][0]["datetime"].endswith("+01:00")
 
+def test_get_antartida_datos_handles_trailing_z_in_fhora(client, fake_aemet_client):
+    """
+    Regression test: AEMET's `fhora` sometimes comes back with a trailing
+    'Z' (e.g. '2024-01-15T23:50:00Z'). A parser that doesn't account for
+    this silently drops every row, making a station with real data look
+    permanently empty.
+    """
+    fake_aemet_client.readings = [_fake_reading("2024-01-15T23:50:00Z", 1.7, 986.1, 3.0)]
 
+    response = client.get(
+        "/api/antartida/datos/fechaini/2024-01-15T00:00:00/fechafin/2024-01-16T00:00:00/"
+        "estacion/Meteo Station Gabriel de Castilla"
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["count"] == 1
+    assert body["data"][0]["temperature_c"] == 1.7
+
+    
 def test_get_antartida_datos_filters_data_types(client, fake_aemet_client):
     fake_aemet_client.readings = [_fake_reading("2024-01-01T10:00:00", -5.0, 990.0, 3.0)]
 
