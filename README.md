@@ -209,41 +209,31 @@ Notes on the implementation:
 
 `backend/tests/` covers, with `pytest`:
 
-- **`test_timezone_utils.py`** — input timezone parsing (IANA + fixed
-  offset), UTC conversion, and the DST behaviour described above (including
-  the exact spring-forward transition instant).
-- **`test_aggregation.py`** — none/hourly/daily/monthly bucketing, the
+- **`test_timezone_utils.py`** — input timezone parsing,
+  UTC conversion, and the DST behaviour described above.
+- **`test_aggregation.py`** — none/hourly/daily/monthly, the
   Madrid-vs-UTC daily-boundary edge case, and the `data_types` filter.
 - **`test_aemet_client.py`** — the two-step AEMET call flow, no-data (404),
-  and server-error/retry behaviour, mocked with `respx` (no real network
-  calls).
+  and server-error/retry behaviour.
 - **`test_api.py`** — end-to-end endpoint tests via FastAPI's `TestClient`,
   with the AEMET client and DB swapped for fakes/an in-memory SQLite DB via
   dependency overrides; covers validation errors (bad date format, unknown
   station, `start >= end`) and the cache-hit-avoids-a-second-AEMET-call
   behaviour from Part 2.
 
-This isn't exhaustive (see **Known limitations** below) but is meant to
-demonstrate the testing *approach*, per the brief's "even if they do not
-cover every possible scenario."
 
-## Known limitations / TODOs
+## TODOs
 
-Left out for time, flagged here rather than silently skipped:
-
-- No authentication/authorization on the API — out of scope for the
-  challenge, but would be required before "thousands of internal
-  applications" actually consume this in production.
-- No pagination on the `data` array — fine for the data volumes a single
+Left out for time, are nice additions and improvements:
+- No pagination on the `data` array, in this exercise is fine for the data volumes a single
   station/range produces here, but a real high-frequency consumer would want
-  cursor-based pagination.
+  pagination.
 - The frontend chart renders one axis for all selected measurements
   (temperature/pressure/speed share a single Y scale); a production version
   would use per-series axes or small multiples.
 - No Docker/Compose setup — the two services are simple enough to run
-  locally as documented above; containerizing both would be a natural next
-  step for deployment.
+  locally as documented above but could be the next stepof this exercise.
 - `FetchLog`/cache strategy assumes a single, append-mostly stream per
-  station (see the caching section above) — it does not handle AEMET
+  station  — it does not handle AEMET
   retroactively revising already-fetched historical values beyond a normal
   upsert on the next overlapping fetch.
