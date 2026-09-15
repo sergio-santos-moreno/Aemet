@@ -45,13 +45,16 @@ logger = logging.getLogger("cache_service")
 
 def _parse_fhora(value: str) -> datetime:
     """
-    AEMET's `fhora` field for antartida readings comes back as a naive
-    'YYYY-MM-DDTHH:MM:SS' string. We requested the range in UTC
-    (fechaini/fechafin with the 'UTC' suffix), and AEMET's own docs confirm
-    all `antartida` observations are reported in UTC, so we treat `fhora`
-    as UTC and store it as such. This assumption is called out in the
-    README as it isn't spelled out explicitly in the endpoint docs.
+    AEMET's `fhora` field for antartida readings comes back as
+    'YYYY-MM-DDTHH:MM:SS', sometimes with a trailing 'Z' (Zulu/UTC marker,
+    e.g. '2024-01-15T23:50:00Z') and sometimes without it -- observed to
+    vary, so we strip it defensively before parsing. We requested the range
+    in UTC (fechaini/fechafin with the 'UTC' suffix), and AEMET's own docs
+    confirm all `antartida` observations are reported in UTC, so we treat
+    `fhora` as UTC and store it as such.
     """
+    if value.endswith("Z"):
+        value = value[:-1]
     return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
 
 
