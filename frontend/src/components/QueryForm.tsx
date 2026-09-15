@@ -11,6 +11,15 @@ function defaultDatetimeLocal(offsetHours: number): string {
   const d = new Date(Date.now() - offsetHours * 3600 * 1000);
   return d.toISOString().slice(0, 19);
 }
+/**
+ * Browsers omit the seconds portion of a <input type="datetime-local">
+ * value when it's exactly ":00" (a documented quirk), e.g. "2026-09-13T00:00"
+ * instead of "2026-09-13T00:00:00". The backend requires the full
+ * YYYY-MM-DDTHH:MM:SS format, so we pad it back in here.
+ */
+function withSeconds(value: string): string {
+  return value.length === 16 ? `${value}:00` : value;
+}
 
 export default function QueryForm({ onSubmit, loading }: Props) {
   const [station, setStation] = useState<Station>(STATIONS[0]);
@@ -28,8 +37,8 @@ export default function QueryForm({ onSubmit, loading }: Props) {
     e.preventDefault();
     onSubmit({
       station,
-      fechaIniStr: fechaIni,
-      fechaFinStr: fechaFin,
+      fechaIniStr: withSeconds(fechaIni),
+      fechaFinStr: withSeconds(fechaFin),
       location: location.trim() || undefined,
       aggregation,
       dataTypes,
